@@ -2,12 +2,6 @@ function main() {
     var canvas = document.getElementById("myCanvas");
     var gl = canvas.getContext("webgl");
 
-    /*
-        A(-0.5, 0.5)
-        B(0.5, 0.5)
-        C(0.5, -0.5)
-        D(-0.5, -0.5)
-    */
 
     var vertices = [
         -0.5, 0.5, 1.0, 0.0, 0.0,   // A
