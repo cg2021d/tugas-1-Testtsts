@@ -274,7 +274,6 @@ function main() {
     gl.enableVertexAttribArray(aColor);
 
     var speed = 0.0090;
-    // var speed = 0.3090;
     var change = 0;
     var uChange = gl.getUniformLocation(shaderProgram, "uChange");
 
@@ -297,7 +296,6 @@ function main() {
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 150);
-        requestAnimationFrame(render);
     }
-    requestAnimationFrame(render)
+    setInterval(render, 1000/60);
 }
