@@ -66,20 +66,9 @@ function main() {
     var uChange = gl.getUniformLocation(shaderProgram, "uChange");
 
     function render() {
-        /*setTimeout(function() {
-            
-            . . . (isi codingan)
-
-            render();
-        }, 1000 / 60);
-    }
-
-    render();
-    */
-		// START
-        if (change >= 0.5 || change <= -0.5) {
-            speed = -speed;
-        }
+        // if (change >= 0.5 || change <= -0.5) {
+        //     speed = -speed;
+        // }
         
         change = change + speed;
         gl.uniform1f(uChange, change);
@@ -88,7 +77,6 @@ function main() {
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-		// END -> buat isi codingan setTimeout
     }
 
     setInterval(render, 1000 / 60);
