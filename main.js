@@ -66,9 +66,9 @@ function main() {
     var uChange = gl.getUniformLocation(shaderProgram, "uChange");
 
     function render() {
-        // if (change >= 0.5 || change <= -0.5) {
-        //     speed = -speed;
-        // }
+        if (change >= 1 || change <= -1) {
+            speed = -speed;
+        }
         
         change = change + speed;
         gl.uniform1f(uChange, change);
