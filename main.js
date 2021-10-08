@@ -6,7 +6,7 @@ function main() {
 
 
     const naget = {
-        yel: [1,0.3,0],
+        yel: [1,0.8,0],
         blue: [0,0,1],
       oki : [-0.4503187758799, 0.481593458079],  
       p1:  [-0.7235189272893, 0.4654133147819],  //1 leftstart
@@ -58,15 +58,15 @@ function main() {
     };
 
     const vertices = [
-        ...naget.oki, ...naget.yel,
+        ...naget.oki, ...naget.yel, //0
         ...naget.p1, ...naget.yel,
         ...naget.p2, ...naget.yel,
 
-        ...naget.oki, ...naget.yel,
+        ...naget.oki, ...naget.yel, //3
         ...naget.p2, ...naget.yel,
         ...naget.p3, ...naget.yel,
 
-        ...naget.oki, ...naget.yel,
+        ...naget.oki, ...naget.yel, //6
         ...naget.p3, ...naget.yel,
         ...naget.p4, ...naget.yel,
 
@@ -150,8 +150,12 @@ function main() {
         ...naget.p23, ...naget.yel,
         ...naget.p24, ...naget.yel,
 
+        ...naget.oki, ...naget.yel,//69
+        ...naget.p24, ...naget.yel,
+        ...naget.p1, ...naget.yel,
 
-        ...naget.oka, ...naget.yel,
+
+        ...naget.oka, ...naget.yel, //Kanan 72
         ...naget.p25, ...naget.yel,
         ...naget.p26, ...naget.yel,
 
@@ -219,29 +223,23 @@ function main() {
         ...naget.p41, ...naget.yel,
         ...naget.p42, ...naget.yel,
 
-        ...naget.oka, ...naget.yel,
+        ...naget.oka, ...naget.yel, //123
         ...naget.p42, ...naget.yel,
         ...naget.p43, ...naget.yel,
     ];
-
-
-
-
-
-
-    // Linked list for vertices
+    
     var buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
 
     var vertexShaderSource = `
         attribute vec2 aPosition;
         attribute vec3 aColor;
         varying vec3 vColor;
         uniform float uChange;
-
         void main() {
-            gl_Position = vec4(aPosition + uChange, 0.0, 1.0);
+            gl_Position = vec4(aPosition.x, aPosition.y, 1.0, 1.0);
             vColor = aColor;
         }
     `;
@@ -249,7 +247,6 @@ function main() {
     var fragmentShaderSource = `
         precision mediump float;
         varying vec3 vColor;
-
         void main() {
             gl_FragColor = vec4(vColor, 1.0);
         }
@@ -257,48 +254,66 @@ function main() {
 
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vertexShader, vertexShaderSource);
-
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fragmentShader, fragmentShaderSource);
+
 
     gl.compileShader(vertexShader);
     gl.compileShader(fragmentShader);
 
-    // Preparing .exe
+
     var shaderProgram = gl.createProgram();
+
+
     gl.attachShader(shaderProgram, vertexShader);
     gl.attachShader(shaderProgram, fragmentShader);
+
+
     gl.linkProgram(shaderProgram);
     gl.useProgram(shaderProgram);
 
-    var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
-    gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 2 * Float32Array.BYTES_PER_ELEMENT, 0);
-    // gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(aPosition);
 
+    var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
+    gl.vertexAttribPointer(
+        aPosition,
+        2,
+        gl.FLOAT,
+        false,
+        5 * Float32Array.BYTES_PER_ELEMENT,
+        0
+    );
+    gl.enableVertexAttribArray(aPosition);
     var aColor = gl.getAttribLocation(shaderProgram, "aColor");
     gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
     gl.enableVertexAttribArray(aColor);
 
-    var speedRaw = 1;
-    var speed = speedRaw / 600;
+
+    var speed = 0.0090;
+    // var speed = 0.3090;
     var change = 0;
     var uChange = gl.getUniformLocation(shaderProgram, "uChange");
 
-    function render() {
-        if (change >= 0.5 || change <= -0.5) {
-            speed = -speed;
+    function moveVertices() {
+        if (change < -1.32 || change > 0.45) {
+            speed = speed * -1;
         }
-        
-        // change = change + speed;
-        gl.uniform1f(uChange, change);
 
-        gl.clearColor(1.0, 1.0, 1.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        gl.drawArrays(gl.POINTS, 0, 43);
-        // gl.drawArrays(gl.TRIANGLE_FAN, 24, 19);
+        for (let i = 361; i < vertices.length; i += 5) {
+            vertices[i] = vertices[i] + speed;
+        }
     }
 
-    setInterval(render, 1000 / 60);
+    function render() {
+        moveVertices();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        change = change + speed;
+        gl.uniform1f(uChange, change);
+
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, 150);
+        requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render)
 }
