@@ -2,9 +2,6 @@ function main() {
     var canvas = document.getElementById("myCanvas");
     var gl = canvas.getContext("webgl");
 
-
-
-
     const naget = {
         yel: [1,0.8,0],
         blue: [0,0,1],
@@ -257,36 +254,24 @@ function main() {
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fragmentShader, fragmentShaderSource);
 
-
     gl.compileShader(vertexShader);
     gl.compileShader(fragmentShader);
 
 
     var shaderProgram = gl.createProgram();
 
-
     gl.attachShader(shaderProgram, vertexShader);
     gl.attachShader(shaderProgram, fragmentShader);
-
 
     gl.linkProgram(shaderProgram);
     gl.useProgram(shaderProgram);
 
-
     var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
-    gl.vertexAttribPointer(
-        aPosition,
-        2,
-        gl.FLOAT,
-        false,
-        5 * Float32Array.BYTES_PER_ELEMENT,
-        0
-    );
+    gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
     gl.enableVertexAttribArray(aPosition);
     var aColor = gl.getAttribLocation(shaderProgram, "aColor");
     gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
     gl.enableVertexAttribArray(aColor);
-
 
     var speed = 0.0090;
     // var speed = 0.3090;
@@ -297,7 +282,6 @@ function main() {
         if (change < -1.32 || change > 0.45) {
             speed = speed * -1;
         }
-
         for (let i = 361; i < vertices.length; i += 5) {
             vertices[i] = vertices[i] + speed;
         }
